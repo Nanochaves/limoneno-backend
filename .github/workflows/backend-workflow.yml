@@ -51,7 +51,6 @@ jobs:
       env:
         RAILS_ENV: test
         DATABASE_HOST: "127.0.0.1"
-        DATABASE_PORT: "3306"
         DATABASE_NAME: limoneno
         DATABASE_USERNAME: limoneno_test
         DATABASE_PASSWORD: limoneno_test
@@ -64,6 +63,7 @@ jobs:
             MYSQL_DATABASE: ${{ env.DATABASE_NAME }}_test
             MYSQL_PASSWORD: ${{ env.DATABASE_PASSWORD }}
           ports: ["3306:3306"]
+          options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
 
       steps:
         - name: Checkout code
@@ -75,11 +75,14 @@ jobs:
             bundler-cache: true
 
         - name: Setup test database
-
+          env:
+            DATABASE_PORT: ${{ job.services.mysql.ports[3306] }}
           run: |
             bin/rails db:setup
 
         - name: Run tests
+          env:
+            DATABASE_PORT: ${{ job.services.mysql.ports[3306] }}
           run: bin/rails test
 
     deploy:
