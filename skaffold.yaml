@@ -1,0 +1,26 @@
+apiVersion: skaffold/v2beta20
+kind: Config
+metadata:
+  name: limoneno-backend
+build:
+  artifacts:
+  - image: 953994510734.dkr.ecr.us-east-1.amazonaws.com/limoneno-backend
+  local: {}
+deploy:
+  kustomize:
+    paths:
+    - k8s/base
+    defaultNamespace: limoneno
+profiles:
+- name: staging
+  deploy:
+    kustomize:
+      paths:
+      - k8s/staging
+      defaultNamespace: limoneno
+- name: prod
+  deploy:
+    kustomize:
+      paths:
+      - k8s/prod
+      defaultNamespace: limoneno

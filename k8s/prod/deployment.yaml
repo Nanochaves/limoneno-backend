@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: limoneno-backend
+spec:
+  template:
+    spec:
+      # topologySpreadConstraints:
+      # - maxSkew: 1
+      #   topologyKey: topology.kubernetes.io/zone
+      #   whenUnsatisfiable: DoNotSchedule
+
+      containers:
+      - name: limoneno-backend
+        resources:
+          requests:
+            cpu: 200m
+            memory: 400Mi
+        envFrom:
+        - secretRef:
+            name: limoneno-backend-env-prod
+        env:
+        - name: RAILS_ENV
+          value: production
+        - name: RAILS_MAX_THREADS
+          value: "5"
+        - name: DATABASE_HOST
+          value: mysql
+        - name: DATABASE_PORT
+          value: "3306"
+        - name: DATABASE_NAME
+          value: limoneno
+        - name: DATABASE_NAME
+          value: limoneno
+        - name: DATABASE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: limoneno-backend-db-prod
+              key: username
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: limoneno-backend-db-prod
+              key: password
+        - name: SECRET_KEY_BASE
+          valueFrom:
+            secretKeyRef:
+              name: limoneno-backend-secret-key-base-prod
+              key: secret
+
+        - name: REDIS_URL
+          value: redis://redis-master
+
+      nodeSelector:
+        instance-class: compute
+      tolerations:
+      - effect: NoSchedule
+        key: instance-class
+        operator: Equal
+        value: compute
