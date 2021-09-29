@@ -49,6 +49,8 @@ spec:
         - name: REDIS_URL
           value: redis://redis-master
 
+      serviceAccountName: limoneno-backend-prod-sa
+
       nodeSelector:
         instance-class: compute
       tolerations:
