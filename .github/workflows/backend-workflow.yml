@@ -101,7 +101,7 @@ jobs:
 
     deploy:
         name: Deploy to cluster
-        needs: build
+        needs: [build, tests]
         runs-on: ubuntu-latest
         steps:
         - name: Check out repository
