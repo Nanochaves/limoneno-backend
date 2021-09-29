@@ -50,10 +50,12 @@ jobs:
       runs-on: ubuntu-latest
       env:
         RAILS_ENV: test
-        DATABASE_HOST: "127.0.0.1"
+        DATABASE_HOST: "mysql"
+        DATABASE_PORT: "3306"
         DATABASE_NAME: limoneno
         DATABASE_USERNAME: limoneno_test
         DATABASE_PASSWORD: limoneno_test
+        REDIS_URL: redis://redis
         AWS_BUCKET: fernando-limoneno-backend-test
 
       services:
@@ -65,7 +67,18 @@ jobs:
             MYSQL_PASSWORD: ${{ env.DATABASE_PASSWORD }}
             MYSQL_ROOT_PASSWORD: ${{ env.DATABASE_PASSWORD }}
           ports: ["3306:3306"]
-          options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=10
+          options: >-
+            --health-cmd="mysqladmin ping"
+            --health-interval=10s
+            --health-timeout=5s
+            --health-retries=10
+        redis:
+          image: redis
+          options: >-
+            --health-cmd "redis-cli ping"
+            --health-interval=10s
+            --health-timeout=5s
+            --health-retries=10
 
       steps:
         - name: Checkout code
@@ -77,14 +90,10 @@ jobs:
             bundler-cache: true
 
         - name: Setup test database
-          env:
-            DATABASE_PORT: ${{ job.services.mysql.ports[3306] }}
           run: |
             bin/rails db:setup
 
         - name: Run tests
-          env:
-            DATABASE_PORT: ${{ job.services.mysql.ports[3306] }}
           run: bin/rails test
 
     deploy:
