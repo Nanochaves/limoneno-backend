@@ -54,6 +54,7 @@ jobs:
         DATABASE_NAME: limoneno
         DATABASE_USERNAME: limoneno_test
         DATABASE_PASSWORD: limoneno_test
+        AWS_BUCKET: fernando-limoneno-backend-test
 
       services:
         mysql:
