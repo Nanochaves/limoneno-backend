@@ -45,7 +45,7 @@ class DatasetServiceTest < Minitest::Test
         mime: 'application/pdf',
         raw_text: nil,
         text: nil,
-        url: 'https://limoneno.s3.amazonaws.com/datasets/1/items/RANDOM_UUID/sample_file.pdf',
+        url: "https://#{ENV['AWS_BUCKET']}.s3.amazonaws.com/datasets/1/items/RANDOM_UUID/sample_file.pdf",
         status: 'loading',
       }, DatasetServiceTest.result(uploaded))
     end
