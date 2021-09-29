@@ -30,8 +30,6 @@ spec:
           value: "3306"
         - name: DATABASE_NAME
           value: limoneno
-        - name: DATABASE_NAME
-          value: limoneno
         - name: DATABASE_USERNAME
           valueFrom:
             secretKeyRef:
